@@ -1,0 +1,1660 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DYNASTES — Wear Your Power</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Rajdhani:wght@400;500;600;700&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --red: #E8001D;
+    --red-dim: #8B0010;
+    --electric: #00C8FF;
+    --purple: #7B2FBE;
+    --purple-light: #A855F7;
+    --bg: #080808;
+    --bg2: #0D0D0D;
+    --bg3: #111117;
+    --text: #F0EEE8;
+    --text-dim: #888;
+    --border: rgba(255,255,255,0.06);
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Rajdhani', sans-serif;
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  /* CUSTOM CURSOR */
+  .cursor {
+    position: fixed;
+    width: 12px; height: 12px;
+    background: var(--red);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%, -50%);
+    transition: transform 0.1s, width 0.2s, height 0.2s, background 0.2s;
+    mix-blend-mode: normal;
+  }
+  .cursor-ring {
+    position: fixed;
+    width: 36px; height: 36px;
+    border: 1px solid rgba(232,0,29,0.5);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9998;
+    transform: translate(-50%, -50%);
+    transition: transform 0.15s ease-out, width 0.3s, height 0.3s;
+  }
+  body:hover .cursor { opacity: 1; }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 24px 48px;
+    background: linear-gradient(to bottom, rgba(8,8,8,0.95), transparent);
+    backdrop-filter: blur(0px);
+  }
+  .nav-logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 28px;
+    letter-spacing: 6px;
+    color: var(--text);
+    text-decoration: none;
+    position: relative;
+  }
+  .nav-logo::after {
+    content: '';
+    position: absolute;
+    bottom: -4px; left: 0;
+    width: 100%; height: 1px;
+    background: var(--red);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.3s;
+  }
+  .nav-logo:hover::after { transform: scaleX(1); }
+  .nav-links {
+    display: flex;
+    gap: 40px;
+    list-style: none;
+  }
+  .nav-links a {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--text); }
+
+  /* HERO */
+  .hero {
+    position: relative;
+    height: 100vh;
+    min-height: 700px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  /* Animated BG */
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    background: var(--bg);
+    overflow: hidden;
+  }
+  .hero-bg::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 60% 50% at 70% 40%, rgba(123,47,190,0.18) 0%, transparent 65%),
+      radial-gradient(ellipse 40% 40% at 30% 60%, rgba(232,0,29,0.12) 0%, transparent 60%),
+      radial-gradient(ellipse 30% 30% at 80% 80%, rgba(0,200,255,0.07) 0%, transparent 55%);
+    animation: bgPulse 8s ease-in-out infinite alternate;
+  }
+  @keyframes bgPulse {
+    0% { opacity: 0.8; transform: scale(1); }
+    100% { opacity: 1; transform: scale(1.05); }
+  }
+
+  /* Grid overlay */
+  .hero-grid {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+    background-size: 60px 60px;
+    mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 30%, transparent 100%);
+    animation: gridDrift 20s linear infinite;
+  }
+  @keyframes gridDrift {
+    0% { transform: translateY(0); }
+    100% { transform: translateY(60px); }
+  }
+
+  /* Scan lines */
+  .scanlines {
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 3px,
+      rgba(0,0,0,0.08) 3px,
+      rgba(0,0,0,0.08) 4px
+    );
+    pointer-events: none;
+    z-index: 2;
+  }
+
+  /* Floating orbs */
+  .orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    animation: orbFloat linear infinite;
+    pointer-events: none;
+  }
+  .orb-1 {
+    width: 500px; height: 500px;
+    background: radial-gradient(circle, rgba(232,0,29,0.15), transparent 70%);
+    top: -100px; right: -100px;
+    animation-duration: 12s;
+    animation-name: orbFloat1;
+  }
+  .orb-2 {
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(123,47,190,0.12), transparent 70%);
+    bottom: -200px; left: -150px;
+    animation-duration: 15s;
+    animation-name: orbFloat2;
+  }
+  .orb-3 {
+    width: 300px; height: 300px;
+    background: radial-gradient(circle, rgba(0,200,255,0.08), transparent 70%);
+    top: 40%; left: 40%;
+    animation-duration: 10s;
+    animation-name: orbFloat3;
+  }
+  @keyframes orbFloat1 {
+    0%, 100% { transform: translate(0, 0); }
+    50% { transform: translate(-30px, 40px); }
+  }
+  @keyframes orbFloat2 {
+    0%, 100% { transform: translate(0, 0); }
+    50% { transform: translate(40px, -30px); }
+  }
+  @keyframes orbFloat3 {
+    0%, 100% { transform: translate(0, 0); }
+    33% { transform: translate(20px, -20px); }
+    66% { transform: translate(-20px, 20px); }
+  }
+
+  /* Japanese kanji decorative */
+  .hero-kanji {
+    position: absolute;
+    right: 8%;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 200px;
+    font-family: serif;
+    line-height: 1;
+    writing-mode: vertical-rl;
+    color: rgba(255,255,255,0.03);
+    letter-spacing: 20px;
+    user-select: none;
+    z-index: 1;
+  }
+
+  /* Red vertical accent line */
+  .hero-line {
+    position: absolute;
+    left: 48px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 2px;
+    height: 0;
+    background: linear-gradient(to bottom, transparent, var(--red), transparent);
+    animation: lineGrow 1.5s 0.5s forwards;
+  }
+  @keyframes lineGrow {
+    to { height: 200px; }
+  }
+
+  .hero-content {
+    position: relative;
+    z-index: 10;
+    text-align: center;
+    padding: 0 24px;
+    animation: heroReveal 1s 0.3s both;
+  }
+  @keyframes heroReveal {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .hero-eyebrow {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 6px;
+    text-transform: uppercase;
+    color: var(--red);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+  }
+  .hero-eyebrow::before, .hero-eyebrow::after {
+    content: '';
+    width: 40px; height: 1px;
+    background: var(--red);
+    opacity: 0.6;
+  }
+
+  .hero-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(72px, 12vw, 160px);
+    line-height: 0.9;
+    letter-spacing: 4px;
+    color: var(--text);
+    position: relative;
+    display: block;
+  }
+  .hero-title .accent { color: var(--red); }
+  .hero-title-glow {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, transparent 40%, rgba(232,0,29,0.08));
+    pointer-events: none;
+  }
+
+  /* Glitch effect on title */
+  .glitch {
+    position: relative;
+    display: inline-block;
+  }
+  .glitch::before, .glitch::after {
+    content: attr(data-text);
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    font-family: inherit;
+    font-size: inherit;
+    letter-spacing: inherit;
+  }
+  .glitch::before {
+    color: var(--electric);
+    animation: glitch1 4s infinite;
+    clip-path: polygon(0 30%, 100% 30%, 100% 50%, 0 50%);
+    opacity: 0;
+  }
+  .glitch::after {
+    color: var(--red);
+    animation: glitch2 4s infinite;
+    clip-path: polygon(0 60%, 100% 60%, 100% 80%, 0 80%);
+    opacity: 0;
+  }
+  @keyframes glitch1 {
+    0%, 90%, 100% { opacity: 0; transform: translate(0); }
+    92% { opacity: 0.8; transform: translate(-3px, 1px); }
+    94% { opacity: 0; transform: translate(0); }
+    96% { opacity: 0.6; transform: translate(3px, -1px); }
+    98% { opacity: 0; }
+  }
+  @keyframes glitch2 {
+    0%, 91%, 100% { opacity: 0; transform: translate(0); }
+    93% { opacity: 0.7; transform: translate(3px, -1px); }
+    95% { opacity: 0; }
+    97% { opacity: 0.5; transform: translate(-3px, 1px); }
+    99% { opacity: 0; }
+  }
+
+  .hero-sub {
+    margin-top: 28px;
+    font-size: 18px;
+    font-weight: 500;
+    color: rgba(240,238,232,0.55);
+    letter-spacing: 1px;
+    max-width: 420px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 44px;
+    padding: 16px 44px;
+    background: var(--red);
+    color: #fff;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 20px;
+    letter-spacing: 4px;
+    text-decoration: none;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.2s;
+    clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 12px 100%, 0 calc(100% - 12px));
+  }
+  .btn-primary::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.15), transparent);
+    transform: translateX(-100%);
+    transition: transform 0.4s ease;
+  }
+  .btn-primary:hover::before { transform: translateX(0); }
+  .btn-primary:hover { transform: translateY(-2px); }
+  .btn-arrow { font-size: 22px; transition: transform 0.2s; }
+  .btn-primary:hover .btn-arrow { transform: translateX(4px); }
+
+  /* Glow under button */
+  .btn-glow-wrap {
+    position: relative;
+    display: inline-block;
+    margin-top: 44px;
+  }
+  .btn-glow-wrap::after {
+    content: '';
+    position: absolute;
+    bottom: -12px; left: 50%;
+    transform: translateX(-50%);
+    width: 80%;
+    height: 20px;
+    background: var(--red);
+    filter: blur(20px);
+    opacity: 0.4;
+    border-radius: 50%;
+    animation: glowPulse 2s ease-in-out infinite;
+  }
+  @keyframes glowPulse {
+    0%, 100% { opacity: 0.3; transform: translateX(-50%) scaleX(0.8); }
+    50% { opacity: 0.6; transform: translateX(-50%) scaleX(1.1); }
+  }
+  .btn-glow-wrap .btn-primary { margin-top: 0; }
+
+  .scroll-hint {
+    position: absolute;
+    bottom: 36px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    z-index: 10;
+    animation: fadeIn 1s 1.5s both;
+  }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  .scroll-hint span {
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 4px;
+    color: var(--text-dim);
+    text-transform: uppercase;
+  }
+  .scroll-mouse {
+    width: 22px; height: 36px;
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 11px;
+    position: relative;
+  }
+  .scroll-mouse::after {
+    content: '';
+    position: absolute;
+    top: 6px; left: 50%;
+    transform: translateX(-50%);
+    width: 3px; height: 6px;
+    background: var(--red);
+    border-radius: 2px;
+    animation: scrollDot 1.5s ease-in-out infinite;
+  }
+  @keyframes scrollDot {
+    0%, 100% { top: 6px; opacity: 1; }
+    100% { top: 20px; opacity: 0; }
+  }
+
+  /* SECTION SHARED */
+  section { position: relative; }
+  .section-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 5px;
+    text-transform: uppercase;
+    color: var(--red);
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .section-label::after {
+    content: '';
+    flex: 1;
+    max-width: 60px;
+    height: 1px;
+    background: var(--red);
+    opacity: 0.4;
+  }
+
+  /* REVIEWS */
+  .reviews {
+    background: var(--bg2);
+    padding: 100px 48px;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+  .reviews-inner { max-width: 1200px; margin: 0 auto; }
+  .reviews-header { margin-bottom: 56px; }
+  .reviews-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 52px;
+    letter-spacing: 3px;
+    line-height: 1;
+  }
+  .reviews-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+  }
+  .review-card {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    padding: 36px 32px;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.3s, transform 0.3s;
+    clip-path: polygon(0 0, calc(100% - 16px) 0, 100% 16px, 100% 100%, 0 100%);
+  }
+  .review-card::before {
+    content: '"';
+    position: absolute;
+    top: -10px; right: 20px;
+    font-size: 120px;
+    font-family: Georgia, serif;
+    color: rgba(232,0,29,0.06);
+    line-height: 1;
+  }
+  .review-card::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 3px; height: 0;
+    background: var(--red);
+    transition: height 0.4s;
+  }
+  .review-card:hover { border-color: rgba(232,0,29,0.3); transform: translateY(-4px); }
+  .review-card:hover::after { height: 100%; }
+  .stars {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 20px;
+  }
+  .star {
+    color: var(--red);
+    font-size: 16px;
+  }
+  .review-text {
+    font-size: 16px;
+    font-weight: 500;
+    color: rgba(240,238,232,0.8);
+    line-height: 1.6;
+    margin-bottom: 28px;
+  }
+  .review-author {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .review-avatar {
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--red-dim), var(--purple));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 16px;
+    letter-spacing: 1px;
+  }
+  .review-name {
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: var(--text);
+  }
+  .review-location {
+    font-size: 12px;
+    color: var(--text-dim);
+    margin-top: 2px;
+  }
+  .verified {
+    margin-left: auto;
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 2px;
+    color: var(--electric);
+    opacity: 0.7;
+  }
+
+  /* DROP NOTIFICATION */
+  .drop-section {
+    padding: 100px 48px;
+    background: var(--bg);
+    position: relative;
+    overflow: hidden;
+  }
+  .drop-section::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 50% 80% at 50% 50%, rgba(123,47,190,0.08) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .drop-inner {
+    max-width: 680px;
+    margin: 0 auto;
+    text-align: center;
+    position: relative;
+  }
+  .drop-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(232,0,29,0.1);
+    border: 1px solid rgba(232,0,29,0.3);
+    padding: 6px 16px;
+    margin-bottom: 28px;
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--red);
+    clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 0 100%);
+  }
+  .drop-dot {
+    width: 6px; height: 6px;
+    background: var(--red);
+    border-radius: 50%;
+    animation: blink 1s infinite;
+  }
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+  }
+  .drop-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(40px, 7vw, 72px);
+    line-height: 0.95;
+    letter-spacing: 2px;
+    margin-bottom: 20px;
+  }
+  .drop-title em { font-style: normal; color: var(--purple-light); }
+  .drop-sub {
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--text-dim);
+    letter-spacing: 0.5px;
+    margin-bottom: 44px;
+  }
+  .drop-form {
+    display: flex;
+    gap: 0;
+    max-width: 500px;
+    margin: 0 auto;
+    position: relative;
+  }
+  .drop-input {
+    flex: 1;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-right: none;
+    padding: 16px 24px;
+    color: var(--text);
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 16px;
+    font-weight: 500;
+    outline: none;
+    transition: border-color 0.3s;
+    clip-path: polygon(8px 0, 100% 0, 100% 100%, 0 100%, 0 8px);
+  }
+  .drop-input::placeholder { color: rgba(255,255,255,0.25); }
+  .drop-input:focus { border-color: rgba(123,47,190,0.5); }
+  .btn-drop {
+    background: linear-gradient(135deg, var(--purple), var(--red));
+    border: none;
+    padding: 16px 32px;
+    color: #fff;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 18px;
+    letter-spacing: 3px;
+    cursor: pointer;
+    transition: opacity 0.2s, transform 0.2s;
+    position: relative;
+    overflow: hidden;
+    clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 0 100%);
+  }
+  .btn-drop::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(255,255,255,0.1);
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+  .btn-drop:hover { transform: translateY(-1px); }
+  .btn-drop:hover::after { opacity: 1; }
+  .drop-success {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    color: var(--electric);
+    font-family: 'Space Mono', monospace;
+    font-size: 13px;
+    letter-spacing: 2px;
+    margin-top: 16px;
+  }
+  .drop-stats {
+    display: flex;
+    justify-content: center;
+    gap: 48px;
+    margin-top: 48px;
+    padding-top: 40px;
+    border-top: 1px solid var(--border);
+  }
+  .stat { text-align: center; }
+  .stat-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 36px;
+    letter-spacing: 2px;
+    color: var(--text);
+    line-height: 1;
+  }
+  .stat-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-top: 4px;
+  }
+
+  /* PRODUCTS */
+  .products {
+    padding: 100px 48px;
+    background: var(--bg2);
+    border-top: 1px solid var(--border);
+  }
+  .products-inner { max-width: 1200px; margin: 0 auto; }
+  .products-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 56px;
+  }
+  .products-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 52px;
+    letter-spacing: 3px;
+    line-height: 1;
+  }
+  .view-all {
+    font-family: 'Space Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: color 0.2s;
+    padding-bottom: 4px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+  }
+  .view-all:hover { color: var(--red); border-color: var(--red); }
+  .products-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+  }
+  .product-card {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    overflow: hidden;
+    transition: border-color 0.3s, transform 0.3s;
+    cursor: pointer;
+  }
+  .product-card:hover { border-color: rgba(232,0,29,0.3); transform: translateY(-6px); }
+  .product-img-wrap {
+    position: relative;
+    aspect-ratio: 3/4;
+    overflow: hidden;
+    background: #0e0e14;
+  }
+  .product-img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    transition: transform 0.6s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .product-card:hover .product-img { transform: scale(1.06); }
+
+  /* Placeholder product images using CSS art */
+  .prod-visual {
+    width: 100%; height: 100%;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+  .prod-visual-1 {
+    background: linear-gradient(160deg, #0e0e14 30%, #1a0a0a 100%);
+  }
+  .prod-visual-2 {
+    background: linear-gradient(160deg, #0a0a18 30%, #110a1a 100%);
+  }
+  .prod-visual-3 {
+    background: linear-gradient(160deg, #080e14 30%, #0a0e1a 100%);
+  }
+  .prod-visual-4 {
+    background: linear-gradient(160deg, #0f0a0a 30%, #14080e 100%);
+  }
+  .prod-icon {
+    font-size: 80px;
+    opacity: 0.5;
+    filter: grayscale(0.5);
+    transition: transform 0.4s, opacity 0.4s;
+    position: relative;
+    z-index: 2;
+  }
+  .product-card:hover .prod-icon { transform: scale(1.1); opacity: 0.8; }
+  .prod-glow {
+    position: absolute;
+    width: 200px; height: 200px;
+    border-radius: 50%;
+    filter: blur(60px);
+    pointer-events: none;
+    animation: prodGlow 3s ease-in-out infinite alternate;
+  }
+  @keyframes prodGlow {
+    from { opacity: 0.4; transform: scale(0.9); }
+    to { opacity: 0.7; transform: scale(1.1); }
+  }
+
+  .product-badge {
+    position: absolute;
+    top: 12px; left: 12px;
+    background: var(--red);
+    color: #fff;
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 2px;
+    padding: 4px 10px;
+    text-transform: uppercase;
+    z-index: 3;
+  }
+  .product-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(8,8,8,0.9) 0%, transparent 50%);
+    opacity: 0;
+    transition: opacity 0.3s;
+    z-index: 2;
+    display: flex;
+    align-items: flex-end;
+    padding: 20px;
+  }
+  .product-card:hover .product-overlay { opacity: 1; }
+  .btn-cart {
+    width: 100%;
+    background: rgba(232,0,29,0.9);
+    color: #fff;
+    border: none;
+    padding: 12px;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 16px;
+    letter-spacing: 3px;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .btn-cart:hover { background: var(--red); }
+  .product-info { padding: 20px; }
+  .product-category {
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 8px;
+  }
+  .product-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    letter-spacing: 2px;
+    line-height: 1.1;
+    margin-bottom: 12px;
+  }
+  .product-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .product-price {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 24px;
+    letter-spacing: 1px;
+    color: var(--text);
+  }
+  .product-price-old {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-dim);
+    text-decoration: line-through;
+    margin-right: 8px;
+  }
+  .product-sizes {
+    display: flex;
+    gap: 6px;
+  }
+  .size {
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 1px;
+    color: var(--text-dim);
+    border: 1px solid var(--border);
+    padding: 2px 6px;
+  }
+
+  /* CONTACT */
+  .contact {
+    padding: 100px 48px;
+    background: var(--bg);
+    border-top: 1px solid var(--border);
+    position: relative;
+    overflow: hidden;
+  }
+  .contact::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 50% 60% at 80% 50%, rgba(232,0,29,0.06) 0%, transparent 65%),
+      radial-gradient(ellipse 40% 50% at 20% 50%, rgba(123,47,190,0.06) 0%, transparent 65%);
+    pointer-events: none;
+  }
+  .contact-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: start;
+    position: relative;
+  }
+  .contact-left {}
+  .contact-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(48px, 6vw, 76px);
+    letter-spacing: 3px;
+    line-height: 0.95;
+    margin-bottom: 24px;
+  }
+  .contact-title em { font-style: normal; color: var(--red); }
+  .contact-desc {
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--text-dim);
+    line-height: 1.7;
+    margin-bottom: 44px;
+    max-width: 360px;
+  }
+  .contact-details { display: flex; flex-direction: column; gap: 20px; }
+  .contact-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+  }
+  .contact-icon {
+    width: 40px; height: 40px;
+    background: rgba(232,0,29,0.08);
+    border: 1px solid rgba(232,0,29,0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    flex-shrink: 0;
+    clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 0 100%);
+    transition: background 0.3s;
+  }
+  .contact-item:hover .contact-icon { background: rgba(232,0,29,0.18); }
+  .contact-item-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--red);
+    margin-bottom: 4px;
+  }
+  .contact-item-val {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text);
+  }
+  .contact-socials {
+    display: flex;
+    gap: 12px;
+    margin-top: 36px;
+  }
+  .social-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 18px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--border);
+    color: var(--text-dim);
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-decoration: none;
+    text-transform: uppercase;
+    transition: border-color 0.3s, color 0.3s, background 0.3s;
+    clip-path: polygon(0 0, calc(100% - 8px) 0, 100% 8px, 100% 100%, 0 100%);
+  }
+  .social-btn:hover {
+    border-color: rgba(232,0,29,0.4);
+    color: var(--text);
+    background: rgba(232,0,29,0.06);
+  }
+
+  /* Contact Form */
+  .contact-form { display: flex; flex-direction: column; gap: 16px; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .form-group { display: flex; flex-direction: column; gap: 8px; }
+  .form-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+  }
+  .form-input, .form-select, .form-textarea {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.08);
+    padding: 14px 18px;
+    color: var(--text);
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 15px;
+    font-weight: 500;
+    outline: none;
+    transition: border-color 0.3s, background 0.3s;
+    width: 100%;
+    clip-path: polygon(6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px);
+  }
+  .form-input::placeholder, .form-textarea::placeholder { color: rgba(255,255,255,0.2); }
+  .form-input:focus, .form-select:focus, .form-textarea:focus {
+    border-color: rgba(232,0,29,0.45);
+    background: rgba(232,0,29,0.04);
+  }
+  .form-select {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23888' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 16px center;
+    cursor: pointer;
+  }
+  .form-select option { background: #111117; }
+  .form-textarea { resize: none; height: 130px; line-height: 1.6; }
+  .btn-submit {
+    align-self: flex-start;
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 40px;
+    background: var(--red);
+    color: #fff;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 20px;
+    letter-spacing: 4px;
+    border: none;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.2s;
+    clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 12px 100%, 0 calc(100% - 12px));
+  }
+  .btn-submit::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.15), transparent);
+    transform: translateX(-100%);
+    transition: transform 0.4s ease;
+  }
+  .btn-submit:hover::before { transform: translateX(0); }
+  .btn-submit:hover { transform: translateY(-2px); }
+  .contact-success {
+    display: none;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 24px;
+    background: rgba(0,200,255,0.06);
+    border: 1px solid rgba(0,200,255,0.2);
+    color: var(--electric);
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 2px;
+    clip-path: polygon(6px 0, 100% 0, 100% 100%, 0 100%, 0 6px);
+  }
+
+  @media (max-width: 900px) {
+    .contact { padding: 70px 24px; }
+    .contact-inner { grid-template-columns: 1fr; gap: 48px; }
+    .form-row { grid-template-columns: 1fr; }
+    .contact-socials { flex-wrap: wrap; }
+    .btn-submit { align-self: stretch; justify-content: center; }
+  }
+
+  /* FOOTER */
+  footer {
+    border-top: 1px solid var(--border);
+    background: var(--bg);
+    padding: 48px;
+  }
+  .footer-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .footer-logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 32px;
+    letter-spacing: 8px;
+    color: rgba(255,255,255,0.15);
+  }
+  .footer-copy {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 2px;
+    color: var(--text-dim);
+  }
+  .footer-links {
+    display: flex;
+    gap: 32px;
+    list-style: none;
+  }
+  .footer-links a {
+    font-family: 'Space Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .footer-links a:hover { color: var(--red); }
+
+  /* ANIMATIONS ON SCROLL */
+  .reveal {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .reveal-delay-1 { transition-delay: 0.1s; }
+  .reveal-delay-2 { transition-delay: 0.2s; }
+  .reveal-delay-3 { transition-delay: 0.3s; }
+
+  /* MOBILE */
+  @media (max-width: 900px) {
+    nav { padding: 20px 24px; }
+    .nav-links { display: none; }
+    .hero-line { display: none; }
+    .hero-kanji { font-size: 100px; opacity: 0.02; }
+    .reviews { padding: 70px 24px; }
+    .reviews-grid { grid-template-columns: 1fr; gap: 16px; }
+    .drop-section { padding: 70px 24px; }
+    .drop-form { flex-direction: column; gap: 8px; }
+    .drop-input { clip-path: none; border-right: 1px solid rgba(255,255,255,0.1); }
+    .btn-drop { clip-path: none; }
+    .products { padding: 70px 24px; }
+    .products-grid { grid-template-columns: repeat(2, 1fr); gap: 14px; }
+    .products-header { flex-direction: column; align-items: flex-start; gap: 16px; }
+    .drop-stats { gap: 24px; }
+    footer { padding: 32px 24px; }
+    .footer-inner { flex-direction: column; gap: 20px; text-align: center; }
+  }
+
+  @media (max-width: 480px) {
+    .products-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Cursor -->
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-logo" href="#">DYNASTES</a>
+  <ul class="nav-links">
+    <li><a href="#products">Collection</a></li>
+    <li><a href="#drops">Drops</a></li>
+    <li><a href="#">Lookbook</a></li>
+    <li><a href="#">About</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="hero">
+  <div class="hero-bg">
+    <div class="hero-grid"></div>
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+  </div>
+  <div class="scanlines"></div>
+  <div class="hero-line"></div>
+  <div class="hero-kanji">力　龍　覇</div>
+
+  <div class="hero-content">
+    <div class="hero-eyebrow">SS 2025 Collection</div>
+    <h1 class="hero-title">
+      <span class="glitch" data-text="DYNASTES">DYNASTES</span><br>
+      <span class="accent">—</span> WEAR YOUR<br>
+      <span class="accent">POWER.</span>
+    </h1>
+    <p class="hero-sub">Forged for those who move through the world like a force of nature.</p>
+    <div class="btn-glow-wrap">
+      <a href="#products" class="btn-primary">
+        Shop Now <span class="btn-arrow">→</span>
+      </a>
+    </div>
+  </div>
+
+  <div class="scroll-hint">
+    <div class="scroll-mouse"></div>
+    <span>Scroll</span>
+  </div>
+</section>
+
+<!-- REVIEWS -->
+<section class="reviews" id="reviews">
+  <div class="reviews-inner">
+    <div class="reviews-header reveal">
+      <div class="section-label">Customer Reviews</div>
+      <h2 class="reviews-title">WORN BY THE ELITE</h2>
+    </div>
+    <div class="reviews-grid">
+      <div class="review-card reveal reveal-delay-1">
+        <div class="stars">
+          <span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span>
+        </div>
+        <p class="review-text">The quality hits different. Every piece is built like armor — I've gotten more compliments on my Dynastes hoodie than anything else I've ever worn.</p>
+        <div class="review-author">
+          <div class="review-avatar">KR</div>
+          <div>
+            <div class="review-name">KAITO R.</div>
+            <div class="review-location">Tokyo, JP</div>
+          </div>
+          <div class="verified">✓ Verified</div>
+        </div>
+      </div>
+      <div class="review-card reveal reveal-delay-2">
+        <div class="stars">
+          <span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span>
+        </div>
+        <p class="review-text">Dynastes doesn't miss. The drop came in two days and the packaging alone felt premium. The fit is immaculate — true to size and structured perfectly.</p>
+        <div class="review-author">
+          <div class="review-avatar">AM</div>
+          <div>
+            <div class="review-name">ANIKA M.</div>
+            <div class="review-location">London, UK</div>
+          </div>
+          <div class="verified">✓ Verified</div>
+        </div>
+      </div>
+      <div class="review-card reveal reveal-delay-3">
+        <div class="stars">
+          <span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span>
+        </div>
+        <p class="review-text">Limited. No restock. That's the whole point. I copped the Crimson Phantom jacket and it's literally unmatched — part streetwear, part statement.</p>
+        <div class="review-author">
+          <div class="review-avatar">JD</div>
+          <div>
+            <div class="review-name">JORDAN D.</div>
+            <div class="review-location">New York, US</div>
+          </div>
+          <div class="verified">✓ Verified</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DROP NOTIFICATION -->
+<section class="drop-section" id="drops">
+  <div class="drop-inner">
+    <div class="drop-tag reveal">
+      <span class="drop-dot"></span>
+      Next Drop Incoming
+    </div>
+    <h2 class="drop-title reveal">
+      BE FIRST TO KNOW<br>
+      ABOUT NEW <em>DROPS.</em>
+    </h2>
+    <p class="drop-sub reveal">Exclusive releases. Limited quantities. No restocks.</p>
+    <div class="drop-form reveal">
+      <input type="email" class="drop-input" placeholder="your@email.com" id="emailInput">
+      <button class="btn-drop" onclick="handleNotify()">NOTIFY ME</button>
+    </div>
+    <div class="drop-success" id="dropSuccess">
+      <span style="color:var(--electric)">✓</span> YOU'RE ON THE LIST. STAY READY.
+    </div>
+    <div class="drop-stats reveal">
+      <div class="stat">
+        <div class="stat-num">12K+</div>
+        <div class="stat-label">On List</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">&lt;48H</div>
+        <div class="stat-label">Sellout Time</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">0</div>
+        <div class="stat-label">Restocks</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRODUCTS -->
+<section class="products" id="products">
+  <div class="products-inner">
+    <div class="products-header reveal">
+      <div>
+        <div class="section-label">Current Drop</div>
+        <h2 class="products-title">FEATURED PIECES</h2>
+      </div>
+      <a href="#" class="view-all">View All →</a>
+    </div>
+    <div class="products-grid">
+
+      <!-- Product 1 -->
+      <div class="product-card reveal reveal-delay-1">
+        <div class="product-img-wrap">
+          <div class="prod-visual prod-visual-1">
+            <div class="prod-glow" style="background:radial-gradient(circle, rgba(232,0,29,0.5), transparent 70%);"></div>
+            <span class="prod-icon">🥋</span>
+          </div>
+          <div class="product-badge">HOT</div>
+          <div class="product-overlay">
+            <button class="btn-cart">Add to Cart</button>
+          </div>
+        </div>
+        <div class="product-info">
+          <div class="product-category">Outerwear</div>
+          <div class="product-name">CRIMSON PHANTOM JACKET</div>
+          <div class="product-footer">
+            <div>
+              <span class="product-price-old">$220</span>
+              <span class="product-price">$178</span>
+            </div>
+            <div class="product-sizes">
+              <span class="size">S</span>
+              <span class="size">M</span>
+              <span class="size">L</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Product 2 -->
+      <div class="product-card reveal reveal-delay-2">
+        <div class="product-img-wrap">
+          <div class="prod-visual prod-visual-2">
+            <div class="prod-glow" style="background:radial-gradient(circle, rgba(123,47,190,0.5), transparent 70%);"></div>
+            <span class="prod-icon">👘</span>
+          </div>
+          <div class="product-badge">NEW</div>
+          <div class="product-overlay">
+            <button class="btn-cart">Add to Cart</button>
+          </div>
+        </div>
+        <div class="product-info">
+          <div class="product-category">Tops</div>
+          <div class="product-name">VOID REALM HOODIE</div>
+          <div class="product-footer">
+            <div>
+              <span class="product-price">$145</span>
+            </div>
+            <div class="product-sizes">
+              <span class="size">M</span>
+              <span class="size">L</span>
+              <span class="size">XL</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Product 3 -->
+      <div class="product-card reveal reveal-delay-3">
+        <div class="product-img-wrap">
+          <div class="prod-visual prod-visual-3">
+            <div class="prod-glow" style="background:radial-gradient(circle, rgba(0,200,255,0.4), transparent 70%);"></div>
+            <span class="prod-icon">👖</span>
+          </div>
+          <div class="product-badge">LIMITED</div>
+          <div class="product-overlay">
+            <button class="btn-cart">Add to Cart</button>
+          </div>
+        </div>
+        <div class="product-info">
+          <div class="product-category">Bottoms</div>
+          <div class="product-name">AZURE SHADOW CARGO</div>
+          <div class="product-footer">
+            <div>
+              <span class="product-price">$130</span>
+            </div>
+            <div class="product-sizes">
+              <span class="size">S</span>
+              <span class="size">M</span>
+              <span class="size">L</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Product 4 -->
+      <div class="product-card reveal">
+        <div class="product-img-wrap">
+          <div class="prod-visual prod-visual-4">
+            <div class="prod-glow" style="background:radial-gradient(circle, rgba(232,0,29,0.3), rgba(123,47,190,0.3), transparent 70%);"></div>
+            <span class="prod-icon">👟</span>
+          </div>
+          <div class="product-overlay">
+            <button class="btn-cart">Add to Cart</button>
+          </div>
+        </div>
+        <div class="product-info">
+          <div class="product-category">Footwear</div>
+          <div class="product-name">DYNASTY FORCE LOW</div>
+          <div class="product-footer">
+            <div>
+              <span class="product-price-old">$195</span>
+              <span class="product-price">$165</span>
+            </div>
+            <div class="product-sizes">
+              <span class="size">42</span>
+              <span class="size">43</span>
+              <span class="size">44</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section class="contact" id="contact">
+  <div class="contact-inner">
+
+    <!-- Left: Info -->
+    <div class="contact-left">
+      <div class="section-label reveal">Get in Touch</div>
+      <h2 class="contact-title reveal">
+        REACH<br>THE <em>DYNASTY.</em>
+      </h2>
+      <p class="contact-desc reveal">
+        Questions about orders, collabs, or press? We move fast. Drop us a message and expect a response within 24 hours.
+      </p>
+      <div class="contact-details reveal">
+        <div class="contact-item">
+          <div class="contact-icon">✉</div>
+          <div>
+            <div class="contact-item-label">Email</div>
+            <div class="contact-item-val">dynastesthread@gmail.com</div>
+          </div>
+        </div>
+        <div class="contact-item">
+          <div class="contact-icon">📍</div>
+          <div>
+            <div class="contact-item-label">Headquarters</div>
+            <div class="contact-item-val">Tokyo · London · New York</div>
+          </div>
+        </div>
+        <div class="contact-item">
+          <div class="contact-icon">⏱</div>
+          <div>
+            <div class="contact-item-label">Response Time</div>
+            <div class="contact-item-val">Within 24 Hours</div>
+          </div>
+        </div>
+      </div>
+      <div class="contact-socials reveal">
+        <a href="https://www.tiktok.com/@dynasteesss" target="_blank" rel="noopener noreferrer" class="social-btn">✦ TikTok</a>
+      </div>
+    </div>
+
+    <!-- Right: Form -->
+    <div class="contact-form reveal">
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">First Name</label>
+          <input type="text" class="form-input" placeholder="Kaito">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Last Name</label>
+          <input type="text" class="form-input" placeholder="Ryu">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Email</label>
+        <input type="email" class="form-input" id="contactEmail" placeholder="your@email.com">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Subject</label>
+        <select class="form-select form-input">
+          <option value="" disabled selected>Select a topic</option>
+          <option>Order Inquiry</option>
+          <option>Collaboration / Press</option>
+          <option>Return or Exchange</option>
+          <option>General Question</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Message</label>
+        <textarea class="form-textarea" id="contactMsg" placeholder="Tell us what's on your mind..."></textarea>
+      </div>
+      <div class="contact-success" id="contactSuccess">
+        <span>✓</span> MESSAGE RECEIVED. WE'LL BE IN TOUCH.
+      </div>
+      <button class="btn-submit" onclick="handleContact()">
+        Send Message <span>→</span>
+      </button>
+    </div>
+
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-logo">DYNASTES</div>
+    <ul class="footer-links">
+      <li><a href="#">Privacy</a></li>
+      <li><a href="#">Terms</a></li>
+      <li><a href="#">Shipping</a></li>
+      <li><a href="#">Contact</a></li>
+    </ul>
+    <div class="footer-copy">© 2025 DYNASTES. ALL RIGHTS RESERVED.</div>
+  </div>
+</footer>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+  // Custom cursor
+  const cursor = document.getElementById('cursor');
+  const ring = document.getElementById('cursorRing');
+  let mx = 0, my = 0, rx = 0, ry = 0;
+
+  document.addEventListener('mousemove', e => {
+    mx = e.clientX; my = e.clientY;
+    cursor.style.left = mx + 'px';
+    cursor.style.top = my + 'px';
+  });
+
+  function animateRing() {
+    rx += (mx - rx) * 0.12;
+    ry += (my - ry) * 0.12;
+    ring.style.left = rx + 'px';
+    ring.style.top = ry + 'px';
+    requestAnimationFrame(animateRing);
+  }
+  animateRing();
+
+  document.querySelectorAll('a, button, input').forEach(el => {
+    el.addEventListener('mouseenter', () => {
+      cursor.style.width = '6px';
+      cursor.style.height = '6px';
+      ring.style.width = '50px';
+      ring.style.height = '50px';
+    });
+    el.addEventListener('mouseleave', () => {
+      cursor.style.width = '12px';
+      cursor.style.height = '12px';
+      ring.style.width = '36px';
+      ring.style.height = '36px';
+    });
+  });
+
+  // Reveal on scroll
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) { e.target.classList.add('visible'); }
+    });
+  }, { threshold: 0.1 });
+  reveals.forEach(r => observer.observe(r));
+
+  // Drop notify
+  function handleNotify() {
+    const input = document.getElementById('emailInput');
+    const val = input.value.trim();
+    const success = document.getElementById('dropSuccess');
+    const form = document.querySelector('.drop-form');
+    if (val && val.includes('@')) {
+      form.style.display = 'none';
+      success.style.display = 'flex';
+    } else {
+      input.style.borderColor = 'rgba(232,0,29,0.6)';
+      input.placeholder = 'Enter a valid email';
+      setTimeout(() => {
+        input.style.borderColor = '';
+        input.placeholder = 'your@email.com';
+      }, 2000);
+    }
+  }
+
+  // Number counter animation for stats
+  function animateCount(el, target, suffix = '') {
+    let current = 0;
+    const step = target / 40;
+    const timer = setInterval(() => {
+      current = Math.min(current + step, target);
+      el.textContent = Math.floor(current).toLocaleString() + suffix;
+      if (current >= target) clearInterval(timer);
+    }, 30);
+  }
+
+  const statsObserver = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        const nums = e.target.querySelectorAll('.stat-num');
+        if (nums[0] && !nums[0].dataset.animated) {
+          nums[0].dataset.animated = true;
+          animateCount(nums[0], 12000, 'K+');
+          setTimeout(() => {
+            nums[0].textContent = '12K+';
+          }, 1300);
+        }
+        statsObserver.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.5 });
+
+  const statsEl = document.querySelector('.drop-stats');
+  if (statsEl) statsObserver.observe(statsEl);
+
+  // Contact form
+  function handleContact() {
+    const firstName = document.querySelector('.form-input[placeholder="Kaito"]').value.trim();
+    const lastName = document.querySelector('.form-input[placeholder="Ryu"]').value.trim();
+    const email = document.getElementById('contactEmail').value.trim();
+    const subject = document.querySelector('.form-select').value;
+    const msg = document.getElementById('contactMsg').value.trim();
+    const success = document.getElementById('contactSuccess');
+    const btn = document.querySelector('.btn-submit');
+    if (email && email.includes('@') && msg) {
+      const to = 'dynastesthread@gmail.com';
+      const subjectLine = encodeURIComponent((subject || 'General Question') + ' — Dynastes Contact Form');
+      const body = encodeURIComponent('Name: ' + firstName + ' ' + lastName + '\nFrom: ' + email + '\n\n' + msg);
+      window.location.href = 'mailto:' + to + '?subject=' + subjectLine + '&body=' + body;
+      success.style.display = 'flex';
+      btn.style.display = 'none';
+    } else {
+      const first = !email || !email.includes('@')
+        ? document.getElementById('contactEmail')
+        : document.getElementById('contactMsg');
+      first.style.borderColor = 'rgba(232,0,29,0.6)';
+      setTimeout(() => { first.style.borderColor = ''; }, 2000);
+    }
+  }
+
+  // Enter key for email
+  document.getElementById('emailInput').addEventListener('keydown', e => {
+    if (e.key === 'Enter') handleNotify();
+  });
+</script>
+</body>
+</html>
